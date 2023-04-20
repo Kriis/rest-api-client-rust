@@ -1,9 +1,9 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 use serde_json::Value;
 use std::error::Error;
 use reqwest::Client;
 use tokio::runtime::Runtime;
-use rocket_contrib::json::{Json, JsonValue};
+use rocket_contrib::json::{Json};
 use std::io::{stdin, stdout, Write};
 use prettytable::{Table, Row, Cell};
 
