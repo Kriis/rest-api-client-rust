@@ -1,11 +1,12 @@
 use serde::{Deserialize};
 use serde_json::Value;
-use std::error::Error;
+use std::{error::Error, f32::consts::E};
 use reqwest::Client;
 use tokio::runtime::Runtime;
 use rocket_contrib::json::{Json};
 use std::io::{stdin, stdout, Write};
 use prettytable::{Table, Row, Cell};
+use reqwest::StatusCode;
 
 #[derive(Debug, Deserialize)]
 struct Book {
@@ -17,17 +18,33 @@ struct Book {
 
 async fn get_all_books() -> Result<Json<Value>, Box<dyn Error>> {
     let client = Client::new();
-    let res = client.get("http://localhost:8000/books").send().await?;
-    let books = res.json::<serde_json::Value>().await?;
-    Ok(Json(books))
+    let res = client.get("https://rest-api-server-book.onrender.com/books").send().await?;
+    if res.status() == StatusCode::OK
+    {
+        let books = res.json::<serde_json::Value>().await?;
+    
+        Ok(Json(books))
+    }
+    else 
+    {
+        Err(format!("Failed to get books: {}", res.status()).into())
+    }
+
 }
 
 async fn get_book(id: u32) -> Result<Json<Value>, Box<dyn Error>> {
     let client = Client::new();
-    let url = format!("http://localhost:8000/books/{}", id);
+    let url = format!("https://rest-api-server-book.onrender.com/books/{}", id);
     let res = client.get(&url).send().await?;
-    let book = res.json::<serde_json::Value>().await?;
-    Ok(Json(book))
+    if res.status() == StatusCode::OK
+    {
+        let book = res.json::<serde_json::Value>().await?;
+        Ok(Json(book))
+    }
+    else 
+    {
+        Err(format!("Failed to get books: {}", res.status()).into())
+    }
 }
 
 fn print_books_table(books_json: &Json<Value>) {
@@ -63,7 +80,6 @@ fn print_books_table(books_json: &Json<Value>) {
 
 fn print_book_table(book_json: &Json<Value>) {
     let book_value = book_json.as_object().unwrap();
-    println!("{:#?}", book_value["id"]);
 
     let mut table = Table::new();
 
@@ -110,6 +126,12 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
             "2" => {
                 let book = Runtime::new()?.block_on(get_book(2))?;
+                // println!("{:#?}", book);
+                print_book_table(&book);
+                
+            }
+            "3" => {
+                let book = Runtime::new()?.block_on(get_book(3))?;
                 // println!("{:#?}", book);
                 print_book_table(&book);
                 
