@@ -7,6 +7,7 @@ use rocket_contrib::json::{Json};
 use std::io::{stdin, stdout, Write};
 use prettytable::{Table, Row, Cell};
 use reqwest::StatusCode;
+use std::time::Duration;
 
 #[derive(Debug, Deserialize)]
 struct Book {
@@ -18,7 +19,11 @@ struct Book {
 
 async fn get_all_books() -> Result<Json<Value>, Box<dyn Error>> {
     let client = Client::new();
-    let res = client.get("https://rest-api-server-book.onrender.com/books").send().await?;
+    let res = client
+                        .get("https://rest-api-server-book.onrender.com/books")
+                        .timeout(Duration::from_secs(5))
+                        .send()
+                        .await?;
     if res.status() == StatusCode::OK
     {
         let books = res.json::<serde_json::Value>().await?;
@@ -35,7 +40,11 @@ async fn get_all_books() -> Result<Json<Value>, Box<dyn Error>> {
 async fn get_book(id: u32) -> Result<Json<Value>, Box<dyn Error>> {
     let client = Client::new();
     let url = format!("https://rest-api-server-book.onrender.com/books/{}", id);
-    let res = client.get(&url).send().await?;
+    let res = client
+                        .get(&url)
+                        .timeout(Duration::from_secs(5))
+                        .send()
+                        .await?;
     if res.status() == StatusCode::OK
     {
         let book = res.json::<serde_json::Value>().await?;
