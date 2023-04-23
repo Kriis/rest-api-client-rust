@@ -123,26 +123,42 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         match choice {
             "get" => {
-                let books = Runtime::new()?.block_on(get_all_books())?;
+                let books = Runtime::new()?.block_on(get_all_books());
                 // println!("{:#?}", books);
-                print_books_table(&books);
+                match books
+                {
+                    Ok(books) => {print_books_table(&books);}
+                    Err(err) => println!("{}", err)
+                }
             }
             "1" => {
-                let book = Runtime::new()?.block_on(get_book(1))?;
+                let book = Runtime::new()?.block_on(get_book(1));
                 // println!("{:#?}", book);
-                print_book_table(&book);
+                match book
+                {
+                    Ok(book) => {print_book_table(&book);}
+                    Err(err) => println!("{}", err)
+                }
                 
             }
             "2" => {
-                let book = Runtime::new()?.block_on(get_book(2))?;
+                let book = Runtime::new()?.block_on(get_book(2));
                 // println!("{:#?}", book);
-                print_book_table(&book);
+                match book
+                {
+                    Ok(book) => {print_book_table(&book);}
+                    Err(err) => println!("{}", err)
+                }
                 
             }
             "3" => {
-                let book = Runtime::new()?.block_on(get_book(3))?;
+                let book = Runtime::new()?.block_on(get_book(3));
                 // println!("{:#?}", book);
-                print_book_table(&book);
+                match book
+                {
+                    Ok(book) => {print_book_table(&book);}
+                    Err(err) => println!("{}", err)
+                }
                 
             }
             "exit" => break,
