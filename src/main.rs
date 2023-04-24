@@ -1,6 +1,6 @@
 use serde::{Deserialize};
 use serde_json::Value;
-use std::{error::Error, f32::consts::E};
+use std::{error::Error};
 use reqwest::Client;
 use tokio::runtime::Runtime;
 use rocket_contrib::json::{Json};
